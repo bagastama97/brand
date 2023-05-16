@@ -1,209 +1,303 @@
-## Endpoints
+# Branded Things API Documentation
 
-List of Available Endpoints:
+## Endpoints :
+
+List of available endpoints:
 
 - `GET /`
-- `GET /genres/categories/types`
-- `POST /`
-- `POST /:id`
-- `DELETE /:id`
+- `GET /product`
+- `POST /product`
+- `DELETE /product/delete/:id`
+- `GET /product/category`
+- `GET /product/:id`
 
-### GET /
+&nbsp;
 
-#### Description
+## 1. GET /
 
-- Get all the products data
+Description:
 
-#### Response
+- ////
 
-_200 - OK_
+## 2. GET /product
 
-- Body
-  ```json
-  {
+Description:
+
+- Get all product from database
+
+Request:
+
+- headers:
+
+```json
+{
+  "access_token": "string"
+}
+```
+
+_Response (200 - OK)_
+
+```json
+[
+  "statusCode": 200,
+  "message": [{
     "statusCode": 200,
     "message": [
       {
-        "id": Integer,
-        "name": String,
-        "description": String,
-        "price": Integer,
-        "stock": Integer,
-        "imgUrl": String,
-        "categoryId": Integer,
-        "authorId": Integer,
-        "createdAt": Date,
-        "updatedAt": Date
+        "id": integer,
+        "name": string,
+        "description": string,
+        "price": integer,
+        "stock": integer,
+        "imgUrl": string,
+        "categoryId": integer,
+        "authorId": integer,
+        "createdAt": string,
+        "updatedAt": string
       },
-      ...
+      ...,
     ]
-  }
-  ```
+  }]
+]
+```
 
-_500 - Server Fail_
+&nbsp;
+_Response (500 - gagal)_
 
-- Body
-  ```json
-  {
-    "statusCode": 500,
-    "message": "gagal"
-  }
-  ```
+```json
+[
+  "statusCode": 500,
+  "message": "gagal"
+]
+```
 
-### GET /genres/categories/types
+&nbsp;
 
-#### Description
+## 3. POST /product
 
-- Get all the products and catagories data
+Description:
 
-_200 - OK_
+- Create data for product
 
-- Body
-  ```json
-  {
-    "statusCode": 200,
-    "message": [
-        [
-      {
-        "id": Integer,
-        "name": String,
-        "description": String,
-        "price": Integer,
-        "stock": Integer,
-        "imgUrl": String,
-        "categoryId": Integer,
-        "authorId": Integer,
-        "createdAt": Date,
-        "updatedAt": Date
-      },
-      ...
-    ],  [
-            {
-                "id": Integer,
-                "name": String,
-                "createdAt": Date,
-                "updatedAt": Date
-            },
-            ...
-        ]
-    ]
-  }
-  ```
+Request:
 
-### POST /
+- body:
 
-#### Description
+```json
+{
+  "name": "string",
+  "description": "string",
+  "price": "integer",
+  "stock": "integer",
+  "imgUrl": "string",
+  "categoryId": "integer",
+  "authorId": "integer"
+}
+```
 
-- Create new data product
+_Response (201 - OK)_
 
-- Get all the products and catagories data
-
-_201 - OK_
-
-- Body
-
-  ```json
-  {
+```json
+[
+  "statusCode": 201,
+  "message": [{
     "statusCode": 201,
-    "message":
-      {
-        "name": String,
-        "description": String,
-        "price": Integer,
-        "stock": Integer,
-        "imgUrl": String,
-        "categoryId": Integer,
-        "authorId": Integer
-      }
-  }
-  ```
-
-  _400 - Validasi Error_
-
-- Body
-
-  ```json
-  {
-    "statusCode": 201,
-    "message": ["error message", ...]
-  }
-  ```
-
-  _500 - Server Error_
-
-- Body
-  ```json
-  {
-    "statusCode": 201,
-    "message": err
-  }
-  ```
-
-### GET /:id
-
-#### Description
-
-- Get product data where id = req.params
-
-  _20 - OK_
-
-- Body
-
-  ```json
-  {
-    "statusCode": 200,
     "message": [
       {
-        "id": Integer,
-        "name": String,
-        "description": String,
-        "price": Integer,
-        "stock": Integer,
-        "imgUrl": String,
-        "categoryId": Integer,
-        "authorId": Integer,
-        "createdAt": Date,
-        "updatedAt": Date
+        "id": integer,
+        "name": string,
+        "description": string,
+        "price": integer,
+        "stock": integer,
+        "imgUrl": string,
+        "categoryId": integer,
+        "authorId": integer,
+        "createdAt": string,
+        "updatedAt": string
       },
-      ...
+      ...,
     ]
-  }
-  ```
+  }]
+]
+```
 
-  _400 - Validasi Error_
+&nbsp;
 
-- Body
+_Response (400 - fail data not found)_
 
-  ```json
-  {
-    "statusCode": 201,
-    "message": "Not Found"
-  }
-  ```
+```json
+[
+  "statusCode": 400,
+  "message": ["error validator message", ...,
+  ]
+]
+```
 
-### Delete /:id
+&nbsp;
 
-#### Description
+_Response (500 - fail server error)_
 
-- Delete product data where id = req.params
+```json
+[
+  "statusCode": 500,
+  "message": "server error"
+]
+```
 
-  _200 - OK_
+&nbsp;
 
-- Body
+## 4. DELETE /product/delete/:id
 
-  ```json
-  {
+Description:
+
+- Delete data from product where id
+
+Request:
+
+- body:
+
+```json
+{
+  "product_id": "req.params"
+}
+```
+
+_Response (200 - OK)_
+
+```json
+[
+  "statusCode": 200,
+  "message": "product.name success to delete"
+]
+```
+
+&nbsp;
+
+_Response (404 - fail data not found)_
+
+```json
+[
+  "statusCode": 404,
+  "message": "Not Found"
+]
+```
+
+&nbsp;
+
+_Response (500 - gagal)_
+
+```json
+[
+  "statusCode": 500,
+  "message": "server error"
+]
+```
+
+&nbsp;
+
+## 5. GET /product/category
+
+Description:
+
+- Get all product and category from database
+
+_Response (200 - OK)_
+
+```json
+
+[
+  "statusCode": 200,
+  "message": [{
     "statusCode": 200,
-    "message": "<entity name> success to delete"
-  }
-  ```
+    "message": [
+      [
+        {
+          "id": integer,
+          "name": string,
+          "description": string,
+          "price": integer,
+          "stock": integer,
+          "imgUrl": string,
+          "categoryId": integer,
+          "authorId": integer,
+          "createdAt": string,
+          "updatedAt": string
+        },
+        ...,
+      ],
+      [
+        {
+          "id": integer,
+          "name": string,
+          "description": string,
+          "createdAt": date,
+          "updatedAt": date
 
-  _404 - Data not found_
+        }
 
-- Body
-  ```json
-  {
-    "statusCode": 500,
-    "message": "gagal"
-  }
-  ```
+      ]
+    ]
+  }]
+]
+```
+
+&nbsp;
+
+_Response (500 - gagal)_
+
+```json
+[
+  "statusCode": 500,
+  "message": "gagal"
+]
+```
+
+## 6. GET /product/:id
+
+- Get product from database where id
+
+Request:
+
+- headers:
+
+```json
+{
+  "product_id": "req.params"
+}
+```
+
+_Response (200 - OK)_
+
+```json
+[
+  "statusCode": 200,
+  "message": [{
+    "statusCode": 200,
+    "message": [
+      {
+        "id": integer,
+        "name": string,
+        "description": string,
+        "price": integer,
+        "stock": integer,
+        "imgUrl": string,
+        "categoryId": integer,
+        "authorId": integer,
+        "createdAt": string,
+        "updatedAt": string
+      },
+      ...,
+    ]
+  }]
+]
+```
+
+&nbsp;
+_Response (500 - gagal)_
+
+```json
+[
+  "statusCode": 500,
+  "message": "Not Found"
+]
+```

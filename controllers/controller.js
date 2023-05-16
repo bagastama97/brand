@@ -1,34 +1,9 @@
 const { User, Product, Category } = require("../models");
 const { Op } = require("sequelize");
 class Controller {
-  static async login(req, res) {
-    const { email, password } = req.body;
-    try {
-      const find = await User.findAll({
-        where: { [Op.and]: [{ email: email }, { password: password }] },
-      });
-      if (find.length > 0) {
-        res.status(200).json({
-          access_token: find[0].role,
-          request_body: { email: find[0].email, password: find[0].password },
-          response: {
-            id: find[0].id,
-            email: find[0].email,
-          },
-        });
-      } else throw { name: "Not Found" };
-    } catch (err) {
-      if (err) {
-        res.status(500).json({
-          statusCode: 500,
-          message: "gagal",
-        });
-      }
-    }
-  }
   static async findAllProducts(req, res) {
     try {
-      const find = await Product.findAll();
+      const find = await Product.finAll();
       res.status(200).json({
         statusCode: 200,
         message: find,
@@ -69,7 +44,7 @@ class Controller {
       } else {
         res.status(500).json({
           statusCode: 500,
-          message: err,
+          message: "server error",
         });
       }
     }
@@ -77,8 +52,9 @@ class Controller {
   static async findOneProducts(req, res) {
     const { id } = req.params;
     try {
-      const find = await Product.findAll({ where: { id: id } });
-      if (find.length > 0) {
+      const find = await Product.findOne({ where: { id: id } });
+      console.log(find);
+      if (find != null) {
         res.status(200).json({
           statusCode: 200,
           message: find,
@@ -97,15 +73,17 @@ class Controller {
     const { id } = req.params;
     try {
       const find = await Product.findAll({ where: { id: id } });
+      console.log(find);
       if (find.length > 0) {
-        const del = await Product.destroy({ where: { id: id } });
+        const del = await Product.detroy({ where: { id: id } });
         res.status(200).json({
           statusCode: 200,
           message: `${find[0].name} success to delete`,
         });
-      } else throw { name: "Not Found" };
+      } else if (find != []) throw { name: "Not Found" };
+      else throw { name: "server error" };
     } catch (err) {
-      if ((err.name = "Not Found")) {
+      if (err.name == "Not Found") {
         res.status(404).json({
           statusCode: 404,
           message: "Not Found",
