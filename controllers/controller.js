@@ -1,9 +1,10 @@
 const { User, Product, Category } = require("../models");
 const { Op } = require("sequelize");
+const { bcryptPass, comparePass } = require("../helper/bcrypt");
 class Controller {
   static async findAllProducts(req, res) {
     try {
-      const find = await Product.finAll();
+      const find = await Product.findAll();
       res.status(200).json({
         statusCode: 200,
         message: find,
@@ -13,6 +14,7 @@ class Controller {
         res.status(500).json({
           statusCode: 500,
           message: "gagal",
+          error: err,
         });
       }
     }
@@ -52,14 +54,15 @@ class Controller {
   static async findOneProducts(req, res) {
     const { id } = req.params;
     try {
-      const find = await Product.findOne({ where: { id: id } });
+      const find = await Product.findByPK({ id });
       console.log(find);
-      if (find != null) {
+      if (find) {
         res.status(200).json({
           statusCode: 200,
           message: find,
         });
-      } else throw { name: "Not Found" };
+      }
+      //else throw { name: "Not Found" };
     } catch (err) {
       if (err) {
         res.status(404).json({
@@ -113,6 +116,31 @@ class Controller {
       res.status(404).json({
         statusCode: 404,
         message: "gagal",
+      });
+    }
+  }
+  static async register(req, res) {
+    try {
+      const { username, email, password, role, phoneNumber, address } =
+        req.body;
+      const hasPassword = bcryptPass(password);
+      const createUser = await User.create({
+        username,
+        email,
+        password,
+        role,
+        phoneNumber,
+        address,
+      });
+      if (createUser) {
+        res.status(201).json({
+          id: createUser.id,
+          password: createUser.password,
+        });
+      }
+    } catch (err) {
+      res.status(400).json({
+        message: "error",
       });
     }
   }

@@ -1,7 +1,6 @@
 const router = require("express").Router();
 const Controller = require("../controllers/controller");
-
-router.get("/");
+router.post("/register", Controller.register);
 router.get("/product", Controller.findAllProducts);
 router.post("/product", Controller.createProducts);
 router.delete("/product/delete/:id", Controller.deleteProducts);
