@@ -1,6 +1,7 @@
 const { User, Product, Category } = require("../models");
 const { Op } = require("sequelize");
 const { bcryptPass, comparePass } = require("../helper/bcrypt");
+const { verifyToken, generateToken } = require("../helper/jwt");
 class Controller {
   static async findAllProducts(req, res) {
     try {
@@ -32,6 +33,7 @@ class Controller {
         categoryId: categoryId,
         authorId: authorId,
       });
+      console.log(find);
       res.status(201).json({
         statusCode: 201,
         message: req.body,
@@ -54,8 +56,7 @@ class Controller {
   static async findOneProducts(req, res) {
     const { id } = req.params;
     try {
-      const find = await Product.findByPK({ id });
-      console.log(find);
+      const find = await Product.findByPk(id);
       if (find) {
         res.status(200).json({
           statusCode: 200,
@@ -76,9 +77,8 @@ class Controller {
     const { id } = req.params;
     try {
       const find = await Product.findAll({ where: { id: id } });
-      console.log(find);
       if (find.length > 0) {
-        const del = await Product.detroy({ where: { id: id } });
+        const del = await Product.destroy({ where: { id: id } });
         res.status(200).json({
           statusCode: 200,
           message: `${find[0].name} success to delete`,
@@ -152,8 +152,12 @@ class Controller {
         const passwordHash = findUser.password;
         const chekPassword = comparePass(password, passwordHash);
         if (chekPassword) {
-          res.status(201).json({
-            message: "berhasil",
+          const token = generateToken({
+            id: findUser.id,
+            username: findUser.username,
+          });
+          res.status(200).json({
+            access_token: token,
           });
         } else throw "err";
       } else throw "err";
