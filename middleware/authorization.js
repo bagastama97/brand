@@ -7,7 +7,7 @@ const Authorization = async (req, res, next) => {
     });
     if (!user || user.role != "admin") throw { name: "Forbidden" };
     const product = await Product.findByPk(id);
-    if (!product) throw { name: "NotFound" };
+    if (!product) throw { name: "Not Found" };
     if (product.authorId != user.id) throw { name: "not yours" };
     next();
   } catch (err) {

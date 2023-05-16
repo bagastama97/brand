@@ -3,7 +3,7 @@ const { Op } = require("sequelize");
 const { bcryptPass, comparePass } = require("../helper/bcrypt");
 const { verifyToken, generateToken } = require("../helper/jwt");
 class Controller {
-  static async findAllProducts(req, res) {
+  static async findAllProducts(req, res, next) {
     try {
       const find = await Product.findAll();
       res.status(200).json({
@@ -11,16 +11,10 @@ class Controller {
         message: find,
       });
     } catch (err) {
-      if (err) {
-        res.status(500).json({
-          statusCode: 500,
-          message: "gagal",
-          error: err,
-        });
-      }
+      next(err);
     }
   }
-  static async createProducts(req, res) {
+  static async createProducts(req, res, next) {
     try {
       const { name, description, price, stock, imgUrl, categoryId, authorId } =
         req.body;
@@ -33,27 +27,15 @@ class Controller {
         categoryId: categoryId,
         authorId: authorId,
       });
-      console.log(find);
       res.status(201).json({
         statusCode: 201,
         message: req.body,
       });
     } catch (err) {
-      if (err.name == "SequelizeValidationError") {
-        const message = err.errors.map((el) => el.message);
-        res.status(400).json({
-          statusCode: 400,
-          message: message,
-        });
-      } else {
-        res.status(500).json({
-          statusCode: 500,
-          message: "server error",
-        });
-      }
+      next(err);
     }
   }
-  static async findOneProducts(req, res) {
+  static async findOneProducts(req, res, next) {
     const { id } = req.params;
     try {
       const find = await Product.findByPk(id);
@@ -62,18 +44,12 @@ class Controller {
           statusCode: 200,
           message: find,
         });
-      }
-      //else throw { name: "Not Found" };
+      } else throw { name: "Not Found" };
     } catch (err) {
-      if (err) {
-        res.status(404).json({
-          statusCode: 404,
-          message: "Not Found",
-        });
-      }
+      next(err);
     }
   }
-  static async deleteProducts(req, res) {
+  static async deleteProducts(req, res, next) {
     const { id } = req.params;
     try {
       const find = await Product.findAll({ where: { id: id } });
@@ -83,23 +59,12 @@ class Controller {
           statusCode: 200,
           message: `${find[0].name} success to delete`,
         });
-      } else if (find != []) throw { name: "Not Found" };
-      else throw { name: "server error" };
+      } else throw { name: "Not Found" };
     } catch (err) {
-      if (err.name == "Not Found") {
-        res.status(404).json({
-          statusCode: 404,
-          message: "Not Found",
-        });
-      } else {
-        res.status(500).json({
-          statusCode: 500,
-          message: "gagal karena kesalahan server",
-        });
-      }
+      next(err);
     }
   }
-  static async findAll(req, res) {
+  static async findAll(req, res, next) {
     try {
       const allProducts = await Product.findAll();
       const allCategories = await Category.findAll();
@@ -113,13 +78,10 @@ class Controller {
         });
       }
     } catch (err) {
-      res.status(404).json({
-        statusCode: 404,
-        message: "gagal",
-      });
+      next(err);
     }
   }
-  static async register(req, res) {
+  static async register(req, res, next) {
     try {
       const { username, email, password, role, phoneNumber, address } =
         req.body;
@@ -139,12 +101,10 @@ class Controller {
         });
       }
     } catch (err) {
-      res.status(400).json({
-        message: "error",
-      });
+      next(err);
     }
   }
-  static async login(req, res) {
+  static async login(req, res, next) {
     try {
       const { email, password } = req.body;
       const findUser = await User.findOne({ where: { email } });
@@ -159,12 +119,10 @@ class Controller {
           res.status(200).json({
             access_token: token,
           });
-        } else throw "err";
-      } else throw "err";
+        } else throw { name: "user not found" };
+      } else throw { name: "user not found" };
     } catch (err) {
-      res.status(400).json({
-        message: "user not found",
-      });
+      next(err);
     }
   }
 }
