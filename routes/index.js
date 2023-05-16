@@ -1,5 +1,7 @@
+const Authentication = require("../middleware/authentication");
 const router = require("express").Router();
 const Controller = require("../controllers/controller");
+router.post("/login", Controller.login);
 router.post("/register", Controller.register);
 router.get("/product", Controller.findAllProducts);
 router.post("/product", Controller.createProducts);

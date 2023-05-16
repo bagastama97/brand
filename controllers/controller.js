@@ -127,7 +127,7 @@ class Controller {
       const createUser = await User.create({
         username,
         email,
-        password,
+        password: hasPassword,
         role,
         phoneNumber,
         address,
@@ -141,6 +141,25 @@ class Controller {
     } catch (err) {
       res.status(400).json({
         message: "error",
+      });
+    }
+  }
+  static async login(req, res) {
+    try {
+      const { email, password } = req.body;
+      const findUser = await User.findOne({ where: { email } });
+      if (findUser) {
+        const passwordHash = findUser.password;
+        const chekPassword = comparePass(password, passwordHash);
+        if (chekPassword) {
+          res.status(201).json({
+            message: "berhasil",
+          });
+        } else throw "err";
+      } else throw "err";
+    } catch (err) {
+      res.status(400).json({
+        message: "user not found",
       });
     }
   }
