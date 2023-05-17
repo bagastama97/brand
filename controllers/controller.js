@@ -5,7 +5,10 @@ const { verifyToken, generateToken } = require("../helper/jwt");
 class Controller {
   static async findAllProducts(req, res, next) {
     try {
-      const find = await Product.findAll();
+      const find = await Product.findAll({
+        include: { model: Category },
+        order: [["id", "ASC"]],
+      });
       res.status(200).json({
         statusCode: 200,
         message: find,
@@ -29,7 +32,7 @@ class Controller {
       });
       res.status(201).json({
         statusCode: 201,
-        message: req.body,
+        message: find,
       });
     } catch (err) {
       next(err);
@@ -53,30 +56,28 @@ class Controller {
     const { id } = req.params;
     try {
       const find = await Product.findAll({ where: { id: id } });
-      if (find.length > 0) {
-        const del = await Product.destroy({ where: { id: id } });
-        res.status(200).json({
-          statusCode: 200,
-          message: `${find[0].name} success to delete`,
-        });
-      } else throw { name: "Not Found" };
+      console.log(find);
+      if (!find) throw { name: "Not Found" };
+      await Product.destroy({
+        where: {
+          id: id,
+        },
+      });
+      res.status(200).json({
+        statusCode: 200,
+        message: `${find[0].name} success to delete`,
+      });
     } catch (err) {
       next(err);
     }
   }
   static async findAll(req, res, next) {
     try {
-      const allProducts = await Product.findAll();
       const allCategories = await Category.findAll();
-      if (allCategories && allProducts) {
-        let result = [];
-        result.push(allProducts);
-        result.push(allCategories);
-        res.status(200).json({
-          statusCode: 200,
-          message: result,
-        });
-      }
+      res.status(200).json({
+        statusCode: 200,
+        message: allCategories,
+      });
     } catch (err) {
       next(err);
     }
@@ -106,19 +107,22 @@ class Controller {
     try {
       const { email, password } = req.body;
       const findUser = await User.findOne({ where: { email } });
-      if (findUser) {
-        const passwordHash = findUser.password;
-        const chekPassword = comparePass(password, passwordHash);
-        if (chekPassword) {
-          const token = generateToken({
-            id: findUser.id,
-            username: findUser.username,
-          });
-          res.status(200).json({
-            access_token: token,
-          });
-        } else throw { name: "user not found" };
-      } else throw { name: "user not found" };
+      if (!findUser) {
+        throw { name: "user not found" };
+      }
+
+      const passwordHash = findUser.password;
+      const chekPassword = comparePass(password, passwordHash);
+      if (!chekPassword) {
+        throw { name: "user not found" };
+      }
+      const token = generateToken({
+        id: findUser.id,
+        username: findUser.username,
+      });
+      res.status(200).json({
+        access_token: token,
+      });
     } catch (err) {
       next(err);
     }
