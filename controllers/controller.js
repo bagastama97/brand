@@ -83,14 +83,12 @@ class Controller {
   }
   static async register(req, res, next) {
     try {
-      const { username, email, password, role, phoneNumber, address } =
-        req.body;
-      const hasPassword = bcryptPass(password);
+      const { username, email, password, phoneNumber, address } = req.body;
       const createUser = await User.create({
         username,
         email,
-        password: hasPassword,
-        role,
+        password,
+        role: "admin",
         phoneNumber,
         address,
       });
