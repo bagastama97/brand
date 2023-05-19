@@ -3,6 +3,7 @@ const { User, Product, Category } = require("../models");
 const Authentication = async (req, res, next) => {
   try {
     const { access_token } = req.headers;
+    console.log("-------------", req.headers, "--------------");
     if (!access_token) throw { name: "Unauthenticate" };
 
     const payload = verifyToken(access_token);

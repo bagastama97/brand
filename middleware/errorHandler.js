@@ -23,7 +23,7 @@ function errorHandling(err, req, res, next) {
         break;
       case "JsonWebTokenError":
         res.status(401).json({
-          message: "JsonWebTokenError Bagas",
+          message: "JsonWebTokenError",
         });
         break;
       case "SequelizeValidationError":

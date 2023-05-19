@@ -10,6 +10,5 @@ router.delete(
   Authorization,
   Controller.deleteProducts
 );
-router.get("/category", Authentication, Controller.findAll);
 router.get("/:id", Authentication, Controller.findOneProducts);
 module.exports = router;
