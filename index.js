@@ -4,7 +4,7 @@ const { route } = require("./routes/index");
 
 require("dotenv").config();
 const app = express();
-const port = 3000;
+const PORT = process.env.PORT || 3000;
 const router = require("./routes/index");
 const cors = require("cors");
 const errorHandling = require("./middleware/errorHandler");
