@@ -1,4 +1,4 @@
-const { User, Product, Category } = require("../models");
+const { History, User, Product, Category } = require("../models");
 const { Op } = require("sequelize");
 const { bcryptPass, comparePass } = require("../helper/bcrypt");
 const { verifyToken, generateToken } = require("../helper/jwt");
@@ -21,6 +21,7 @@ class Controller {
     try {
       const { name, description, price, stock, imgUrl, categoryId } = req.body;
       const authorId = req.additionalData.userId;
+      const status = "Active";
       const find = await Product.create({
         name: name,
         description: description,
@@ -29,6 +30,12 @@ class Controller {
         imgUrl: imgUrl,
         categoryId: categoryId,
         authorId: authorId,
+        status: status,
+      });
+      await History.create({
+        title: "POST",
+        description: `new product with id ${find.id} created`,
+        updatedBy: find.authorId,
       });
       res.status(201).json({
         statusCode: 201,
@@ -44,6 +51,12 @@ class Controller {
       const category = await Category.create({
         name: name,
       });
+      const authorId = req.additionalData.userId;
+      await History.create({
+        title: "POST",
+        description: `new category with id ${category.id} created`,
+        updatedBy: authorId,
+      });
       res.status(201).json({
         statusCode: 201,
         message: category,
@@ -55,7 +68,10 @@ class Controller {
   static async findOneProducts(req, res, next) {
     const { id } = req.params;
     try {
-      const find = await Product.findByPk(id);
+      const find = await Product.findOne({
+        where: { id: id },
+        include: [{ model: Category }, { model: User }],
+      });
       if (find) {
         res.status(200).json({
           statusCode: 200,
@@ -76,6 +92,12 @@ class Controller {
           id: id,
         },
       });
+      const authorId = req.additionalData.userId;
+      await History.create({
+        title: "DELETE",
+        description: `product with id ${id} deleted`,
+        updatedBy: authorId,
+      });
       res.status(200).json({
         statusCode: 200,
         message: `${find[0].name} success to delete`,
@@ -93,6 +115,12 @@ class Controller {
         where: {
           id: id,
         },
+      });
+      const authorId = req.additionalData.userId;
+      await History.create({
+        title: "DELETE",
+        description: `category with id ${id} deleted`,
+        updatedBy: authorId,
       });
       res.status(200).json({
         statusCode: 200,
@@ -179,7 +207,7 @@ class Controller {
           password: "12345",
           role: "staff",
           phoneNumber: 123,
-          address: "",
+          address: "abc",
         },
       });
       let token;
@@ -203,7 +231,71 @@ class Controller {
         });
       }
     } catch (error) {
+      console.error(error);
       next(error);
+    }
+  }
+  static async putProduct(req, res, next) {
+    try {
+      const { id } = req.params;
+      const { name, description, price, stock, imgUrl, categoryId } = req.body;
+      await Product.update(
+        {
+          name: name,
+          description: description,
+          price: price,
+          stock: stock,
+          imgUrl: imgUrl,
+          categoryId: categoryId,
+        },
+        { where: { id: id } }
+      );
+      const authorId = req.additionalData.userId;
+      await History.create({
+        title: "POST",
+        description: `product with id ${id} updated`,
+        updatedBy: authorId,
+      });
+      res.status(201).json({
+        statusCode: 201,
+        message: `product with id ${id} updated`,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+  static async patchProduct(req, res, next) {
+    try {
+      const { id } = req.params;
+      const product = await Product.update(
+        { status: "Inactive" },
+        { where: { id: id } }
+      );
+      const authorId = req.additionalData.userId;
+      await History.create({
+        title: "POST",
+        description: `product status with id ${id} has been updated from Active into Inactive`,
+        updatedBy: authorId,
+      });
+      res.status(201).json({
+        statusCode: 201,
+        message: `product status with id ${id} has been updated from Active into Inactive`,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+  static async findAllHistory(req, res, next) {
+    try {
+      const history = await History.findAll({
+        order: [["id", "DESC"]],
+      });
+      res.status(200).json({
+        statusCode: 200,
+        message: history,
+      });
+    } catch (err) {
+      next(err);
     }
   }
 }

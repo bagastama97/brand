@@ -1,4 +1,5 @@
+const Authentication = require("../middleware/authentication");
 const router = require("express").Router();
 const Controller = require("../controllers/controller");
-router.post("/", Controller.register);
+router.get("/", Authentication, Controller.findAllHistory);
 module.exports = router;

@@ -1,5 +1,6 @@
 function errorHandling(err, req, res, next) {
   try {
+    console.log(err);
     switch (err.name) {
       case "user not found":
         res.status(401).json({
@@ -16,9 +17,9 @@ function errorHandling(err, req, res, next) {
           message: "User role must be admin",
         });
         break;
-      case "not yours":
+      case "not admin":
         res.status(401).json({
-          message: "Can't delete other user product if youre role not admin",
+          message: "Can't take this action if youre role not admin",
         });
         break;
       case "JsonWebTokenError":

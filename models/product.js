@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           notEmpty: {
             args: true,
-            msg: "Post name tidak boleh empty",
+            msg: "Product name cant be empty",
           },
         },
       },
@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           notEmpty: {
             args: true,
-            msg: "Post description tidak boleh empty",
+            msg: "Product description cant be empty",
           },
         },
       },
@@ -46,18 +46,64 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           notEmpty: {
             args: true,
-            msg: "Post price tidak boleh empty",
+            msg: "Product price cant be empty",
           },
           min: {
             args: 10,
-            msg: "Post price tidak boleh <100rb",
+            msg: "Product price cant less than 100rb",
           },
         },
       },
-      stock: DataTypes.INTEGER,
-      imgUrl: DataTypes.STRING,
-      categoryId: DataTypes.INTEGER,
-      authorId: DataTypes.INTEGER,
+      stock: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          notEmpty: {
+            args: true,
+            msg: "Product stock cant be empty",
+          },
+        },
+      },
+      imgUrl: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: {
+            args: true,
+            msg: "Product Image cant be empty",
+          },
+        },
+      },
+      categoryId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          notEmpty: {
+            args: true,
+            msg: "Product category cant be empty",
+          },
+        },
+      },
+      authorId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          notEmpty: {
+            args: true,
+            msg: "Product author cant be empty",
+          },
+        },
+      },
+      status: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: {
+            args: true,
+            msg: "Product status cant be empty",
+          },
+        },
+      },
     },
     {
       sequelize,

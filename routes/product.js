@@ -4,6 +4,8 @@ const router = require("express").Router();
 const Controller = require("../controllers/controller");
 router.get("/", Authentication, Controller.findAllProducts);
 router.post("/", Authentication, Controller.createProducts);
+router.put("/:id", Authentication, Authorization, Controller.putProduct);
+router.patch("/:id", Authentication, Authorization, Controller.patchProduct);
 router.delete(
   "/delete/:id",
   Authentication,

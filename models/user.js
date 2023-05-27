@@ -20,12 +20,74 @@ module.exports = (sequelize, DataTypes) => {
   }
   User.init(
     {
-      username: DataTypes.STRING,
-      email: DataTypes.STRING,
-      password: DataTypes.STRING,
-      role: DataTypes.STRING,
-      phoneNumber: DataTypes.STRING,
-      address: DataTypes.STRING,
+      username: {
+        type: DataTypes.STRING,
+        unique: {
+          args: true,
+          msg: "Username already exist",
+        },
+        allowNull: false,
+        validate: {
+          notEmpty: {
+            args: true,
+            msg: "Username cant be empty",
+          },
+        },
+      },
+      email: {
+        type: DataTypes.STRING,
+        unique: {
+          args: true,
+          msg: "Email already exist",
+        },
+        allowNull: false,
+        validate: {
+          notEmpty: {
+            args: true,
+            msg: "Email cant be empty",
+          },
+        },
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: {
+            args: true,
+            msg: "Password cant be empty",
+          },
+        },
+      },
+      phoneNumber: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: {
+            args: true,
+            msg: "Phone number cant be empty",
+          },
+        },
+      },
+      address: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: {
+            args: true,
+            msg: "Address cant be empty",
+          },
+        },
+      },
+      role: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: {
+            args: true,
+            msg: "Role cant be empty",
+          },
+        },
+      },
     },
     {
       sequelize,
@@ -33,7 +95,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
   User.beforeCreate(async (user, options) => {
-    const hashedPassword = await bcryptPass(user.password);
+    const hashedPassword = bcryptPass(user.password);
     user.password = hashedPassword;
   });
   return User;

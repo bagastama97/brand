@@ -15,7 +15,7 @@ const Authorization = async (req, res, next) => {
     }
 
     if (user.role != "admin" && product.authorId != user.id) {
-      throw { name: "not yours" };
+      throw { name: "not admin" };
     }
     next();
   } catch (err) {
