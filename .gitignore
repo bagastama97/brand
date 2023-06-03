@@ -1,2 +1,4 @@
 node_modules
 .env
+aws key
+credential_development

@@ -1,20 +1,20 @@
 const { verifyToken, generateToken } = require("../helper/jwt");
-const { User, Product, Category } = require("../models");
+const { Customer } = require("../models");
 const Authentication = async (req, res, next) => {
   try {
     const { access_token } = req.headers;
     console.log(access_token);
     if (!access_token) throw { name: "Unauthenticate" };
-
+    console.log("aman 1");
     const payload = verifyToken(access_token);
-
-    let user = {};
-    user = await User.findOne({ where: { id: payload.id } });
-    if (!user) throw { name: "Unauthenticate" };
+    console.log(payload);
+    let customer = {};
+    customer = await Customer.findOne({ where: { id: payload.id } });
+    if (!customer) throw { name: "Unauthenticate" };
+    console.log("aman 2");
     req.additionalData = {
-      userId: user.id,
-      username: user.username,
-      role: user.role,
+      customerId: customer.id,
+      customerEmail: customer.email,
     };
     next();
   } catch (err) {

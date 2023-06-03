@@ -298,6 +298,57 @@ class Controller {
       next(err);
     }
   }
+  // static async filterProducts(req, res, next) {
+  //   try {
+  //     const { productName } = req.body;
+  //     console.log(productName);
+  //     const find = await Product.findAll({
+  //       where: {
+  //         [Op.and]: [
+  //           { status: "Active" },
+  //           {
+  //             name: { [Op.iLike]: `%${productName}%` },
+  //           },
+  //         ],
+  //       },
+  //       include: [{ model: Category }, { model: User }],
+  //       order: [["id", "ASC"]],
+  //     });
+  //     res.status(200).json({
+  //       statusCode: 200,
+  //       message: find,
+  //     });
+  //   } catch (err) {
+  //     next(err);
+  //   }
+  // }
+  // static async findAllPaginationProducts(req, res, next) {
+  //   try {
+  //     const { page } = req.params;
+  //     const limit = 8; // buat static
+  //     const offset = (page - 1) * limit; // page saat ini
+  //     const count = await Product.count(); // ada berapa data yang dimiliki
+  //     const totalPages = Math.ceil(count / limit); // total data : 8 akan di gunakan jadi jumlah halaman
+  //     const grids = Math.ceil(count / 4); //jumlah grid
+  //     const find = await Product.findAll({
+  //       where: { status: "Active" },
+  //       include: [{ model: Category }, { model: User }],
+  //       order: [["id", "ASC"]],
+  //       offset,
+  //       limit,
+  //     });
+  //     res.status(200).json({
+  //       statusCode: 200,
+  //       offset: offset,
+  //       countData: count,
+  //       pagination: totalPages,
+  //       grids: grids,
+  //       message: find,
+  //     });
+  //   } catch (err) {
+  //     next(err);
+  //   }
+  // }
 }
 
 module.exports = Controller;
